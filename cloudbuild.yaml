@@ -1,0 +1,4 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'eu.gcr.io/tema-3-cc-345018/tema3:latest', '.' ]
+images: [eu.gcr.io/tema-3-cc-345018/tema3:latest]
