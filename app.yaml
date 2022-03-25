@@ -1,6 +1,6 @@
 runtime : python39
 env_variables:
-  ALLOWED_HOSTS: ['*']
+  ALLOWED_HOSTS: ['*','tema-3-cc-345018.lm.r.appspot.com']
   # This setting is used in settings.py to configure your ALLOWED_HOSTS
   APPENGINE_URL:  tema-3-cc-345018.lm.r.appspot.com
 

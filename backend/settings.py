@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-0@=^62&5w4(&n%cx=p$5i9#x$#90pwwvlfb-$wp%pg&!bttgtz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS =['*','tema-3-cc-345018.lm.r.appspot.com']
 
 
 # Application definition
