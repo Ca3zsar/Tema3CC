@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1 Register
+  form(action="/register", method="post")
+    p
+      label(for="username") Username
+      input(type="text", name="username", id="username")
+    p
+      label(for="email") Email
+      input(type="text", name="email", id="email")
+    p
+      label(for="password") Password
+      input(type="password", name="password", id="password")
+    p
+      label(for="password_confirmation") Password Confirmation
+      input(type="password", name="password_confirmation", id="password_confirmation")
+    p
+      input(type="submit", value="Register")
+    p
+      a(href="/login") Already have an account?

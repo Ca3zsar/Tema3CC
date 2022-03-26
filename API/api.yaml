@@ -1,8 +1,9 @@
 runtime : python39
+service : api
 env_variables:
-  ALLOWED_HOSTS: ['*','tema-3-cc-345018.lm.r.appspot.com']
+  ALLOWED_HOSTS: ['*','api-dot-tema-3-cc-345018.lm.r.appspot.com']
   # This setting is used in settings.py to configure your ALLOWED_HOSTS
-  APPENGINE_URL:  tema-3-cc-345018.lm.r.appspot.com
+  APPENGINE_URL:  api-dot-tema-3-cc-345018.lm.r.appspot.com
 
 handlers:
 # This configures Google App Engine to serve the files in the app's static
