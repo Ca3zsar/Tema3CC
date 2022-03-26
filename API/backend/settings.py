@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(DEBUG=(bool, False))
 env_file = os.path.join(BASE_DIR, ".env")
-
+print(os.path.isfile(env_file))
 if os.path.isfile(env_file):
     # Use a local secret file, if provided
 
