@@ -1,5 +1,10 @@
-from pathlib import Path
+import os
+import io
+from urllib.parse import urlparse
 
+import environ
+from pathlib import Path
+from google.cloud import secretmanager
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,16 +13,58 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0@=^62&5w4(&n%cx=p$5i9#x$#90pwwvlfb-$wp%pg&!bttgtz'
+
+env = environ.Env(DEBUG=(bool, False))
+env_file = os.path.join(BASE_DIR, ".env")
+
+if os.path.isfile(env_file):
+    # Use a local secret file, if provided
+
+    env.read_env(env_file)
+elif os.getenv("TRAMPOLINE_CI", None):
+    # Create local settings if running with CI, for unit testing
+
+    placeholder = (
+        f"SECRET_KEY=a\n"
+        f"DATABASE_URL=sqlite://{os.path.join(BASE_DIR, 'db.sqlite3')}"
+    )
+    env.read_env(io.StringIO(placeholder))
+# [END_EXCLUDE]
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+    # Pull secrets from Secret Manager
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+
+    client = secretmanager.SecretManagerServiceClient()
+    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+
+    env.read_env(io.StringIO(payload))
+else:
+    raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS =['*','tema-3-cc-345018.lm.r.appspot.com']
+APPENGINE_URL = env("APPENGINE_URL", default=None)
+if APPENGINE_URL:
+    # Ensure a scheme is present in the URL before it's processed.
+    if not urlparse(APPENGINE_URL).scheme:
+        APPENGINE_URL = f"https://{APPENGINE_URL}"
+
+    ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc]
+    CSRF_TRUSTED_ORIGINS = [APPENGINE_URL]
+    SECURE_SSL_REDIRECT = True
+else:
+    ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS =['*','tema-3-cc-345018.lm.r.appspot.com']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'twitter.apps.TwitterConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,16 +103,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+DATABASES = {"default": env.db()}
+
+# If the flag as been set, configure to use proxy
+if os.getenv("USE_CLOUD_SQL_AUTH_PROXY", None):
+    print("HEI")
+    DATABASES["default"]["HOST"] = "127.0.0.1"
+    DATABASES["default"]["PORT"] = 5433
 
 
 # Password validation
@@ -102,7 +149,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
+STATIC_ROOT = "static"
+STATIC_URL = "/static/"
+STATICFILES_DIRS = []
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
