@@ -1,5 +1,6 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
 
 const axios = require('axios');
 const apiLink = 'http://localhost:8000/twitter/register';
@@ -9,19 +10,19 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
+  let password = req.body.password;
+  let salt = bcrypt.genSaltSync(10);
+  let hash = bcrypt.hashSync(password, salt);
 
-  console.log(req.body.username);
   axios.post(apiLink, {
     username: req.body.username,
-    password: req.body.password,
+    password: hash,
     email: req.body.email
   })
   .then(res => {
     console.log(`statusCode: ${res.status}`);
-    // console.log(res.data);
   })
   .catch(error => {
-    // console.error(error)
   })
 
   res.send('ok');

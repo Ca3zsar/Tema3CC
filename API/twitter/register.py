@@ -18,10 +18,9 @@ def register(request):
             account = Account(username=username, password=password, email=email)
             account.save()
         except Exception as e:
-            return HttpResponse(f"Error: {e}", status=400)
+            return HttpResponse(f"Error: {e}", status=500)
 
-        response_data = {}
-        response_data["message"] = f"Account successfully created  : {username} - {password} - {email}"
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+        response_data = {"message": f"Account successfully created!"}
+        return HttpResponse(json.dumps(response_data), content_type="application/json", status=201)
     else:
         return HttpResponse("Method not allowed", status=405)

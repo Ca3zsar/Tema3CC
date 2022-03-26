@@ -7,8 +7,9 @@ from django.http import HttpResponse
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
-        username = request.POST.get("username", "")
-        password = request.POST.get("password", "")
+        info = json.loads(request.body)
+        username = info.get("username", "")
+        password = info.get("password", "")
 
         if username == "" or password == "":
             return HttpResponse("Fields username and password must exist!", status=400)
