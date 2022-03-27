@@ -394,3 +394,9 @@ iframe {
     padding-right: 15px;
   }
 }
+
+
+.error {
+  color: rgb(192, 27, 27);
+  text-align: center;
+}
