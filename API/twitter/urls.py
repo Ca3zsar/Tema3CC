@@ -7,7 +7,7 @@ from . import tweet
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('tweet-url', tweet.tweet, name='tweet-post'),
+    path('tweet', tweet.tweet, name='tweet'),
     path('register', register.register, name='register'),
     path('login', login.login, name='login'),
 ]
