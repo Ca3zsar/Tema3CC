@@ -35,7 +35,7 @@ router.post('/',
   .then(res => {
 //    user is succesfully created - do something on front-end
     console.log(`statusCode: ${res.status}`);
-
+    
     // daca totul e bn, face cv ~ 'Successfully log in with user Marta'
 
     console.log(res.data)
