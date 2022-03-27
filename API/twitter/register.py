@@ -1,4 +1,6 @@
 import json
+
+import jwt
 from django.views.decorators.csrf import csrf_exempt
 from .models import Account
 from django.http import HttpResponse
@@ -33,6 +35,11 @@ def register(request):
             return HttpResponse(f"Error: {e}", status=500)
 
         response_data = {"message": f"Account successfully created!"}
+        username = info.get("username", "")
+        email = info.get("email", "")
+
+        jwt_token = jwt.encode({'username': username, 'email' : email}, 'secret', algorithm='HS256')
+        response_data["token"] = jwt_token.decode('utf-8')
         return HttpResponse(json.dumps(response_data), content_type="application/json", status=201)
     else:
         return HttpResponse("Method not allowed", status=405)
