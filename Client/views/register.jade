@@ -6,6 +6,11 @@ block content
     p
       label(for="username") Username
       input(type="text", name="username", id="username")
+     - var checkUser = function(message){
+     -   if (message != null && message !== '') {return 'Username already exists'}
+     -   else return '';
+     - }
+    p #{checkUser(message)}
     p
       label(for="email") Email
       input(type="text", name="email", id="email")
