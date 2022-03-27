@@ -19,8 +19,11 @@ router.post('/',
     function(req, res, next) {
      const errors = validationResult(req);
      if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      console.log(errors)
+      res.render('login', { message: 'Username and password must have at least 4 characters!' });
+      return;
     }
+
 
   axios.post(apiLink, {
     username: req.body.username,
@@ -29,15 +32,21 @@ router.post('/',
   .then(res => {
 //    user is succesfully created - do something on front-end
     console.log(`statusCode: ${res.status}`);
+
+    // daca totul e bn, face cv ~ 'Successfully log in with user Marta'
+
     console.log(res.data)
 //    res.render('index', { title: 'Succes' });
   })
   .catch(error => {
 //  there is an error, probably conflict
-//   res.render('register', { message: 'username already exists' });
+    
 // maybe do something with the status code?
-     console.error(error.response.status)
-     console.error(error.response.data["reason"])
+
+    res.render('login', { message: 'Username or password incorrect!' });
+
+    console.error(error.response.status)
+    console.error(error.response.data["reason"])
   })
 
 });

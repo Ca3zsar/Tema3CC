@@ -22,7 +22,6 @@ router.post('/',
   body('password').isLength({ min: 5 }),
 
   // password must be at least 5 chars long
-  body('password_confirmation').isLength({ min: 5 }),
   body('password_confirmation').custom((value, { req }) => {
     if (value !== req.body.password) {
       throw new Error('Password confirmation does not match password');
@@ -34,7 +33,15 @@ router.post('/',
 function(req, res, next) {
   const errors = validationResult(req);
      if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      // return res.status(400).json({ errors: errors.array() });
+
+      var jsonObj = []
+      errors.errors.forEach(element => {
+        jsonObj[element.param] = element.msg
+      });
+
+      res.render('register',  jsonObj);
+      return;
     }
 
   axios.post(apiLink, {
@@ -45,6 +52,10 @@ function(req, res, next) {
   .then(res => {
 //    user is succesfully created - do something on front-end
     console.log(`statusCode: ${res.status}`);
+
+    // merge totul bn
+
+
 //    res.render('index', { title: 'Succes' });
   })
   .catch(error => {
