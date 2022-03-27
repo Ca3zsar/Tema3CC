@@ -6,6 +6,7 @@ from django.http import HttpResponse
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
+        response_data = {}
         info = json.loads(request.body)
         username = info.get("username", "")
         password = info.get("password", "")
@@ -16,12 +17,22 @@ def register(request):
 
         try:
             account = Account(username=username, password=password, email=email)
+            name = Account.objects.filter(username=f'{username}')
+            if name:
+                response_data["message"] = "There is a business rule that prevents you from creating that resource"
+                response_data["reason"] = "name"
+                return HttpResponse(json.dumps(response_data), content_type="application/json", status=409)
+            email = Account.objects.filter(email=f'{email}')
+            if email:
+                response_data["message"] = "There is a business rule that prevents you from creating that resource"
+                response_data["reason"] = "email"
+                return HttpResponse(json.dumps(response_data), content_type="application/json", status=409)
+
             account.save()
         except Exception as e:
             return HttpResponse(f"Error: {e}", status=400)
 
-        response_data = {}
         response_data["message"] = f"Account successfully created  : {username} - {password} - {email}"
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+        return HttpResponse(json.dumps(response_data), content_type="application/json", status=201)
     else:
         return HttpResponse("Method not allowed", status=405)
