@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 Tweets
+  form(action="/tweet", method="post")
+    p
+      label(for="hashtag") Hashtag
+      input(type="text", name="hashtag", id="hashtag")
+    p
+      input(type="submit", value="Find Tweets")

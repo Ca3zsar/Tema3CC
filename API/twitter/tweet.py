@@ -2,16 +2,20 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
-
+from . import tweet_aux
 @csrf_exempt
 def tweet(request):
     if request.method == 'POST':
-        url = request.POST.get("url", "")
-        if url == "":
-            return HttpResponse("URL empty", status=400)
+        info = json.loads(request.body)
 
-        response_data = {}
-        response_data["message"] = f"Your url is {url}"
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+        hashtag = info.get("hashtag", "")
+        if hashtag == "":
+            return HttpResponse("hashtag empty", status=400)
+
+        print(hashtag)
+
+        tweets = tweet_aux.getTweetsByHashtag(hashtag)
+
+        return HttpResponse(json.dumps(tweets), content_type="application/json")
     else:
         return HttpResponse("Method not allowed", status=405)
