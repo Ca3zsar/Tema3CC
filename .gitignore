@@ -139,3 +139,6 @@ GitHub.sublime-settings
 cloud_sql_proxy.exe
 
 Client/node_modules/
+API/client_secret.json
+API/credentials.json
+API/token.json

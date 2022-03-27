@@ -4,7 +4,7 @@ const { body, validationResult } = require('express-validator');
 
 const axios = require('axios');
 const bcrypt = require("bcryptjs");
-const apiLink = 'http://localhost:8000/twitter/login';
+const apiLink = 'https://api-dot-tema-3-cc-345018.lm.r.appspot.com/twitter/login';
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
