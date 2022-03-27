@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 
 const axios = require('axios');
 const apiLink = 'http://localhost:8000/twitter/register';
@@ -44,15 +45,18 @@ function(req, res, next) {
       return;
     }
 
+  let password = req.body.password;
+  let salt = bcrypt.genSaltSync(10);
+  let hash = bcrypt.hashSync(password, salt);
+  
   axios.post(apiLink, {
     username: req.body.username,
-    password: req.body.password,
+    password: hash,
     email: req.body.email
   })
   .then(res => {
 //    user is succesfully created - do something on front-end
     console.log(`statusCode: ${res.status}`);
-
     // merge totul bn
 
 
@@ -64,6 +68,7 @@ function(req, res, next) {
 // maybe do something with the status code?
      console.error(error.response.status)
      console.error(error.response.data["reason"])
+
 
   })
 

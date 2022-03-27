@@ -3,11 +3,12 @@ var router = express.Router();
 const { body, validationResult } = require('express-validator');
 
 const axios = require('axios');
+const bcrypt = require("bcryptjs");
 const apiLink = 'http://localhost:8000/twitter/login';
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('login', { title: 'Login page' });
+router.get('/', function (req, res, next) {
+    res.render('login', {title: 'Login page'});
 });
 
 router.post('/',
@@ -23,11 +24,13 @@ router.post('/',
       res.render('login', { message: 'Username and password must have at least 4 characters!' });
       return;
     }
-
+    let password = req.body.password;
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync(password, salt);
 
   axios.post(apiLink, {
     username: req.body.username,
-    password: req.body.password,
+    password: hash,
   })
   .then(res => {
 //    user is succesfully created - do something on front-end
@@ -48,7 +51,6 @@ router.post('/',
     console.error(error.response.status)
     console.error(error.response.data["reason"])
   })
-
 });
 
 module.exports = router;
