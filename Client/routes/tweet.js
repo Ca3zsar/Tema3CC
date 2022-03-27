@@ -25,8 +25,7 @@ router.post('/', function(req, res, next) {
         jsonObj[i++] = element.tweet
     });
 
-
-    res.render('tweets_preview', {data : jsonObj});
+    res.render('tweets_preview', {data : jsonObj, 'hashtag' : req.body.hashtag});
   })
   .catch(error => {
     // console.error(error)
