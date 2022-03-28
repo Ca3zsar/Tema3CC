@@ -6,6 +6,7 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1')
 
     link(rel='icon', type='image/png', href='images/icons/favicon.ico')
+    script(src='https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit',async='',defer='')
     // ===============================================================================================
     link(rel='stylesheet', type='text/css', href='vendor/bootstrap/css/bootstrap.min.css')
     // ===============================================================================================
@@ -39,8 +40,23 @@ html(lang='en')
                     .wrap-input100.validate-input(data-validate='Please enter password')
                         input.input100(type='password', name='password', placeholder='Password')
                         span.focus-input100
+
+                    #g-recaptcha(data-callback='recaptchaCallback')
+
                     .container-login100-form-btn.p-t-20
-                        button.login100-form-btn    Sign in
+                        button.login100-form-btn(disabled=true)    Sign in
                     .flex-col-c.p-t-100.p-b-40
                         span.txt1.p-b-9 Don't have an account?
                         a.txt3(href='/register')    Sign up now
+
+    script.
+        var buttonDisabled = true;
+        var onloadCallback = function() {
+            grecaptcha.render('g-recaptcha', {
+              'sitekey' : '6LcxeyEfAAAAAFUpPLPGxXY6Xr8ig-dovESadtgJ'
+            });
+        };
+
+        function recaptchaCallback() {
+            document.querySelector('button').disabled = false;
+        };
