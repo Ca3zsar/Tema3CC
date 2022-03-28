@@ -13,3 +13,4 @@ urlpatterns = [
     path('login', login.login, name='login'),
     path('check-jwt', jwt_verify.check_jwt, name='check-jwt')
 ]
+
