@@ -8,7 +8,7 @@ steps:
 #  dir : ./Client
 #  args: ['start']
 - name: "gcr.io/cloud-builders/gcloud"
-  args: ["app", "deploy"]
+  args: ["app", "deploy", "client.yaml"]
   dir: ./Client
 options:
  logging: CLOUD_LOGGING_ONLY
