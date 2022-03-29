@@ -405,3 +405,15 @@ p.m-b-16 {
   font-size: large;
   color: #49b536;
 }
+
+#g-recaptcha{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login100-form{
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-content: center;
+}
