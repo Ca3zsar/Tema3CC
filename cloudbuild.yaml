@@ -3,9 +3,12 @@ steps:
   entrypoint: npm
   dir: ./Client
   args: ['install']
-- name: node
-  entrypoint: npm
-  dir : ./Client
-  args: ['start']
+#- name: node
+#  entrypoint: npm
+#  dir : ./Client
+#  args: ['start']
+- name: "gcr.io/cloud-builders/gcloud"
+  args: ["app", "deploy"]
+  dir: ./Client
 options:
  logging: CLOUD_LOGGING_ONLY
