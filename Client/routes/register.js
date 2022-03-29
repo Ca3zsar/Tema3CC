@@ -5,8 +5,9 @@ const bcrypt = require('bcryptjs');
 const checker = require('../utils/jwt-checker');
 
 const axios = require('axios');
-// const apiLink = 'https://api-dot-tema-3-cc-345018.lm.r.appspot.com/twitter/register';
-const apiLink = 'http://localhost:8000/twitter/register';
+const apiLink = 'https://api-dot-tema-3-cc-345018.lm.r.appspot.com/twitter/register';
+// const apiLink = 'http://localhost:8000/twitter/register';
+
 router.get('/', async function (req, res, next) {
     let token = req.cookies["access_token"];
     let result = await checker.verifyToken(token);

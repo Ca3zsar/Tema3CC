@@ -3,12 +3,15 @@ steps:
   entrypoint: npm
   dir: ./Client
   args: ['install']
-#- name: node
-#  entrypoint: npm
-#  dir : ./Client
-#  args: ['start']
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy", "client.yaml"]
   dir: ./Client
+- name: python
+  entrypoint: pip
+  args: ["install", "-r", "requirements.txt"]
+  dir: ./API
+- name: "gcr.io/cloud-builders/gcloud"
+  args: ["app", "deploy", "api.yaml"]
+  dir: ./API
 options:
  logging: CLOUD_LOGGING_ONLY
