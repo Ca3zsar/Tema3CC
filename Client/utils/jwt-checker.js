@@ -3,8 +3,8 @@ const router = express.Router();
 
 const axios = require('axios');
 
-// const apiLink = 'https://api-dot-tema-3-cc-345018.lm.r.appspot.com/twitter/check-jwt';
-const apiLink = 'http://localhost:8000/twitter/check-jwt';
+ const apiLink = 'https://api-dot-tema-3-cc-345018.lm.r.appspot.com/twitter/check-jwt';
+//const apiLink = 'http://localhost:8000/twitter/check-jwt';
 
 async function verifyToken(token) {
     return axios.post(apiLink, {

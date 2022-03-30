@@ -5,9 +5,18 @@ const axios = require('axios');
 // const apiLink = 'http://localhost:8000/twitter/tweet';
 const apiLink = 'https://api-dot-tema-3-cc-345018.lm.r.appspot.com/twitter/tweet';
 
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const checker = require("../utils/jwt-checker");
 
-router.get('/', function(req, res, next) {
-  res.render('tweet', { title: 'Tweet page' });
+router.get('/', async function(req, res, next) {
+    let token = req.cookies["access_token"];
+    let result = await checker.verifyToken(token);
+    if (result["error"] === undefined) {
+        res.render('tweet', { title: 'Tweet page' });
+    } else {
+    res.redirect('/login');
+    }
 });
 
 router.post('/', function(req, res, next) {

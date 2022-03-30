@@ -41,9 +41,10 @@ router.post('/',
         let password = req.body.password;
         let salt = bcrypt.genSaltSync(10);
         let hash = bcrypt.hashSync(password, salt);
+//        console.log(hash);
         axios.post(apiLink, {
             username: req.body.username,
-            password: hash,
+            password: password,
         })
             .then(response => {
                 console.log(response.data.token);
