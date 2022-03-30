@@ -1,88 +1,33 @@
-import argparse
+from flask import Flask, request, make_response, jsonify
+import google.auth
 
+app = Flask(__name__)
+_, PROJECT_ID = google.auth.default()
+PARENT = 'projects/{}'.format(PROJECT_ID)
 
-# [START translate_detect_language]
-def detect_language(text):
-    """Detects the text's language."""
-    from google.cloud import translate_v2 as translate
+@app.route('/test', methods=['GET', 'POST'])
+def translate():
+    from flask import Flask, render_template, request, make_response, jsonify
+    local_request = request.get_json()
 
-    translate_client = translate.Client()
+    if not local_request:
+        return make_response(jsonify({"error" : 'Texts or target language not specified!'}), 400)
 
-    # Text can also be a sequence of strings, in which case this method
-    # will return a sequence of results for each text.
-    result = translate_client.detect_language(text)
+    texts = local_request.get('messages', [])
+    target = local_request.get('target', '')
 
-    print("Text: {}".format(text))
-    print("Confidence: {}".format(result["confidence"]))
-    print("Language: {}".format(result["language"]))
+    if not texts or not target:
+        return make_response(jsonify({"error" : 'Texts or target language not specified!'}), 400)
 
+    translated_texts = []
+    for text in texts:
+        translated_texts.append(translate_text(target, text))
+    response_data = {"translated_texts": translated_texts}
+    return make_response(jsonify(response_data), 200)
 
-# [END translate_detect_language]
-
-# [START translate_list_codes]
-def list_languages():
-    """Lists all available languages."""
-    from google.cloud import translate_v2 as translate
-
-    translate_client = translate.Client()
-
-    results = translate_client.get_languages()
-
-    for language in results:
-        print(u"{name} ({language})".format(**language))
-
-
-# [END translate_list_codes]
-
-# [START translate_list_language_names]
-def list_languages_with_target(target):
-    """Lists all available languages and localizes them to the target language.
-    Target must be an ISO 639-1 language code.
-    See https://g.co/cloud/translate/v2/translate-reference#supported_languages
-    """
-    from google.cloud import translate_v2 as translate
-
-    translate_client = translate.Client()
-
-    results = translate_client.get_languages(target_language=target)
-
-    for language in results:
-        print(u"{name} ({language})".format(**language))
-
-
-# [END translate_list_language_names]
-
-# [START translate_text_with_model]
-def translate_text_with_model(target, text, model="nmt"):
-    """Translates text into the target language.
-    Make sure your project is allowlisted.
-    Target must be an ISO 639-1 language code.
-    See https://g.co/cloud/translate/v2/translate-reference#supported_languages
-    """
-    from google.cloud import translate_v2 as translate
-
-    translate_client = translate.Client()
-
-    if isinstance(text, bytes):
-        text = text.decode("utf-8")
-
-    # Text can also be a sequence of strings, in which case this method
-    # will return a sequence of results for each text.
-    result = translate_client.translate(text, target_language=target, model=model)
-
-    print(u"Text: {}".format(result["input"]))
-    print(u"Translation: {}".format(result["translatedText"]))
-    print(u"Detected source language: {}".format(result["detectedSourceLanguage"]))
-
-
-# [END translate_text_with_model]
 
 # [START translate_translate_text]
 def translate_text(target, text):
-    """Translates text into the target language.
-    Target must be an ISO 639-1 language code.
-    See https://g.co/cloud/translate/v2/translate-reference#supported_languages
-    """
     import six
     from google.cloud import translate_v2 as translate
 
@@ -95,47 +40,14 @@ def translate_text(target, text):
     # will return a sequence of results for each text.
     result = translate_client.translate(text, target_language=target)
 
-    print(u"Text: {}".format(result["input"]))
-    print(u"Translation: {}".format(result["translatedText"]))
-    print(u"Detected source language: {}".format(result["detectedSourceLanguage"]))
+    # print(u"Text: {}".format(result["input"]))
+    # print(u"Translation: {}".format(result["translatedText"]))
+    # print(u"Detected source language: {}".format(result["detectedSourceLanguage"]))
+    return result['translatedText']
 
 
-# [END translate_translate_text]
+import os
+app.run(debug=True, threaded=True, host='127.0.0.1',
+        port=8080)
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    subparsers = parser.add_subparsers(dest="command")
-
-    detect_langage_parser = subparsers.add_parser(
-        "detect-language", help=detect_language.__doc__
-    )
-    detect_langage_parser.add_argument("text")
-
-    list_languages_parser = subparsers.add_parser(
-        "list-languages", help=list_languages.__doc__
-    )
-
-    list_languages_with_target_parser = subparsers.add_parser(
-        "list-languages-with-target", help=list_languages_with_target.__doc__
-    )
-    list_languages_with_target_parser.add_argument("target")
-
-    translate_text_parser = subparsers.add_parser(
-        "translate-text", help=translate_text.__doc__
-    )
-    translate_text_parser.add_argument("target")
-    translate_text_parser.add_argument("text")
-
-    args = parser.parse_args()
-
-    if args.command == "detect-language":
-        detect_language(args.text)
-    elif args.command == "list-languages":
-        list_languages()
-    elif args.command == "list-languages-with-target":
-        list_languages_with_target(args.target)
-    elif args.command == "translate-text":
-        translate_text(args.target, args.text)
