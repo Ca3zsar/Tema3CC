@@ -25,16 +25,65 @@ html(lang='en')
     link(rel='stylesheet', type='text/css', href='css/main.css')
     // ===============================================================================================
   
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css')
 
     body
     .limiter
         .container-login100
             .wrap-login100
                 form.login100-form.validate-form.p-l-55.p-r-55.p-t-178
+                    .container-login100-form-btn.p-t-20.m-b-16
+                            button.login100-form-btn(onclick='translate')    Translate in Romanian &nbsp
+                                i.fa-solid.fa-language
                     span.login100-form-title    Tweets
+                    
 
                     p.m-b-16='First 3 tweets by: #' + hashtag
 
                     each val in [0, 1, 2]
                         .error.m-b-16=data[val]
+
+    script.
+
+        var api = 'https://europe-central2-tema-3-cc-345018.cloudfunctions.net/translate';
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("POST", api);
+
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        var tweets = getTweetsList();
+
+        var test = ["msg1", "msg2", "msg3"];
+
+        jsonObj = {
+            "messages": test,
+            "target": 'ro'
+        };
+
+
+        jsonTest = {
+            "messages":["mesaj1", "mesaj2","mesajn"],
+            "target" : "ro"
+        }
+
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+
+        xhr.send(jsonTest);
+
+        function getTweetsList() {
+            var matches = document.querySelectorAll('.error.m-b-16');
+            var array = []
+            matches.forEach(function(match) {
+                var tweet = match.innerHTML;
+                array.push(tweet);
+            });
+            return array;
+        };
     

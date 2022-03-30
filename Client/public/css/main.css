@@ -417,3 +417,12 @@ p.m-b-16 {
   flex-direction: column;
   justify-content: center;
 }
+
+.container-login100-form-btn.p-t-20.m-b-16 > button {
+  background-color: #393ee9;
+}
+  
+
+i.fa-solid.fa-language {
+  font-size: 50px;
+}
